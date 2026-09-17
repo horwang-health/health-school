@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบรายงานสุขภาพนักเรียน</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Tahoma",sans-serif;background:#f4f8fb;color:#263746}
+header{background:#1687a7;color:white;padding:22px 6%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:24px;font-weight:bold}.logo span{font-size:30px;margin-right:8px}
+nav a{color:white;text-decoration:none;margin-left:22px;font-weight:bold;cursor:pointer}
+.hero{padding:55px 8%;background:linear-gradient(135deg,#dff7ff,#fff);display:flex;align-items:center;gap:40px}
+.hero-text{flex:1}.hero h1{font-size:42px;margin:0 0 14px;color:#126b85}.hero p{font-size:18px;line-height:1.7}.hero button,.btn{border:0;background:#1687a7;color:#fff;padding:13px 22px;border-radius:10px;font-size:16px;cursor:pointer}
+.hero-card{background:white;border-radius:20px;padding:28px;box-shadow:0 8px 30px #0001;min-width:300px}
+.container{max-width:1150px;margin:auto;padding:35px 20px}.title{text-align:center;margin-bottom:25px}.title h2{color:#126b85}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#fff;padding:22px;border-radius:16px;box-shadow:0 5px 20px #0000000d}.card .icon{font-size:32px}.card h3{margin:10px 0}.number{font-size:30px;font-weight:bold;color:#1687a7}
+section{scroll-margin-top:80px}.panel{background:white;padding:25px;border-radius:16px;box-shadow:0 5px 20px #0000000d;margin-top:25px}
+form{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}label{font-weight:bold}input,select{width:100%;padding:12px;margin-top:6px;border:1px solid #d5e1e7;border-radius:9px;font-size:15px}.full{grid-column:1/-1}
+table{width:100%;border-collapse:collapse;margin-top:15px}th,td{padding:13px;border-bottom:1px solid #e5eef2;text-align:left}th{background:#eaf7fb;color:#126b85}
+footer{text-align:center;padding:25px;background:#126b85;color:white;margin-top:45px}
+.hidden{display:none}.success{padding:12px;background:#e7f8ed;color:#237a45;border-radius:9px;margin-top:15px}
+@media(max-width:800px){.cards{grid-template-columns:repeat(2,1fr)}.hero{display:block}.hero-card{margin-top:25px}form{grid-template-columns:1fr}nav{display:none}}
+@media(max-width:500px){.cards{grid-template-columns:1fr}.hero h1{font-size:30px}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo"><span>🏥</span>Health School</div>
+<nav>
+<a href="#home">หน้าแรก</a><a href="#record">บันทึกสุขภาพ</a><a href="#stats">สถิติ</a><a href="#report">รายงาน</a>
+</nav>
+</header>
+
+<section class="hero" id="home">
+<div class="hero-text">
+<h1>ระบบรายงานสุขภาพนักเรียน</h1>
+<p>เว็บไซต์สำหรับบันทึก ติดตาม และสรุปข้อมูลสุขภาพของนักเรียน เพื่อช่วยให้โรงเรียนดูแลสุขภาพนักเรียนได้อย่างเป็นระบบ</p>
+<button onclick="document.getElementById('record').scrollIntoView({behavior:'smooth'})">+ บันทึกข้อมูลสุขภาพ</button>
+</div>
+<div class="hero-card">
+<h3>📊 ภาพรวมวันนี้</h3>
+<p>นักเรียนทั้งหมด <b>2,788</b> คน</p>
+<p>บันทึกสุขภาพแล้ว <b id="recordedCount">0</b> คน</p>
+<p>เข้าใช้ห้องพยาบาล <b>24</b> คน</p>
+</div>
+</section>
+
+<div class="container">
+<section id="stats">
+<div class="title"><h2>📈 สถิติสุขภาพ</h2><p>ข้อมูลภาพรวมของนักเรียน</p></div>
+<div class="cards">
+<div class="card"><div class="icon">👨‍🎓</div><h3>นักเรียนทั้งหมด</h3><div class="number">2,788</div><small>คน</small></div>
+
+<div class="card"><div class="icon">⚖️</div><h3>ต้องติดตาม BMI</h3><div class="number" id="bmiCount">0</div><small>คน</small></div>
+<div class="card"><div class="icon">🏥</div><h3>ห้องพยาบาล</h3><div class="number" id="nurseCount">0</div><small>ครั้งวันนี้</small></div>
+</div>
+</section>
+
+<section id="record" class="panel">
+<div class="title"><h2>📝 บันทึกสุขภาพนักเรียนที่มาห้องพยาบาล</h2></div>
+<form id="healthForm">
+<div><label>ชื่อ-นามสกุล</label><input id="name" required placeholder="กรอกชื่อ"></div>
+<div><label>เลขที่</label><input id="studentNo" type="number" min="1" required placeholder="กรอกเลขที่"></div>
+<div><label>ชั้นเรียน</label><select id="class"><option>ม.1/1</option><option>ม.1/2</option><option>ม.1/3</option><option>ม.1/4</option><option>ม.1/5</option><option>ม.1/6</option><option>ม.1/7</option><option>ม.1/8</option><option>ม.1/9</option><option>ม.1/10</option><option>ม.1/11</option><option>ม.1/12</option><option>ม.1/13</option><option>ม.1/14</option><option>ม.2/1</option><option>ม.2/2</option><option>ม.2/3</option><option>ม.2/4</option><option>ม.2/5</option><option>ม.2/6</option><option>ม.2/7</option><option>ม.2/8</option><option>ม.2/9</option><option>ม.2/10</option><option>ม.2/11</option><option>ม.2/12</option><option>ม.2/13</option><option>ม.2/14</option><option>ม.3/1</option><option>ม.3/2</option><option>ม.3/3</option><option>ม.3/4</option><option>ม.3/5</option><option>ม.3/6</option><option>ม.3/7</option><option>ม.3/8</option><option>ม.3/9</option><option>ม.3/10</option><option>ม.3/11</option><option>ม.3/12</option><option>ม.3/13</option><option>ม.3/14</option><option>ม.4/1</option><option>ม.4/2</option><option>ม.4/3</option><option>ม.4/4</option><option>ม.4/5</option><option>ม.4/6</option><option>ม.4/7</option><option>ม.4/8</option><option>ม.4/9</option><option>ม.4/10</option><option>ม.4/11</option><option>ม.4/12</option><option>ม.4/13</option><option>ม.4/14</option><option>ม.5/1</option><option>ม.5/2</option><option>ม.5/3</option><option>ม.5/4</option><option>ม.5/5</option><option>ม.5/6</option><option>ม.5/7</option><option>ม.5/8</option><option>ม.5/9</option><option>ม.5/10</option><option>ม.5/11</option><option>ม.5/12</option><option>ม.5/13</option><option>ม.5/14</option><option>ม.6/1</option><option>ม.6/2</option><option>ม.6/3</option><option>ม.6/4</option><option>ม.6/5</option><option>ม.6/6</option><option>ม.6/7</option><option>ม.6/8</option><option>ม.6/9</option><option>ม.6/10</option><option>ม.6/11</option><option>ม.6/12</option><option>ม.6/13</option><option>ม.6/14</option></select></div>
+<div><label>น้ำหนัก (กก.)</label><input id="weight" type="number" step="0.1" required></div>
+<div><label>ส่วนสูง (ซม.)</label><input id="height" type="number" required></div>
+<div><label>แพ้ยา</label><input id="drugAllergy" placeholder="เช่น พาราเซตามอล / ไม่มี"></div>
+<div><label>แพ้อาหาร</label><input id="foodAllergy" placeholder="เช่น กุ้ง นม / ไม่มี"></div>
+<div class="full"><label>อาการ/หมายเหตุ</label><input id="note" placeholder="เช่น ปวดหัว, ไม่มีอาการ"></div>
+<div class="full"><button class="btn" type="submit">บันทึกข้อมูล</button></div>
+</form>
+<div id="result"></div>
+</section>
+
+<section id="report" class="panel">
+<div class="title"><h2>📋 รายงานข้อมูลล่าสุด</h2></div>
+<table>
+<thead><tr><th>ชื่อ</th><th>เลขที่</th><th>ชั้น</th><th>BMI</th><th>สถานะ</th><th>แพ้ยา</th><th>แพ้อาหาร</th><th>หมายเหตุ</th></tr></thead>
+<tbody id="reportBody">
+<tr><td colspan="8" style="text-align:center">ยังไม่มีข้อมูลที่บันทึก</td></tr>
+</tbody>
+</table>
+</section>
+</div>
+
+<footer>🏥 ระบบรายงานสุขภาพนักเรียน | โครงงานเว็บไซต์โรงเรียน</footer>
+
+
+<script>
+// สถิติสุขภาพรายวัน: รีเซ็ตเป็น 0 เมื่อขึ้นวันใหม่
+function getTodayKey() {
+  const d = new Date();
+  return d.getFullYear() + "-" +
+         String(d.getMonth()+1).padStart(2,"0") + "-" +
+         String(d.getDate()).padStart(2,"0");
+}
+
+function initDailyStats() {
+  const today = getTodayKey();
+  const savedDate = localStorage.getItem("healthStatsDate");
+
+  if (savedDate !== today) {
+    localStorage.setItem("healthStatsDate", today);
+    localStorage.setItem("healthRecordCount", "0");
+    localStorage.setItem("healthBmiCount", "0");
+    localStorage.setItem("healthNurseCount", "0");
+  }
+
+  updateStats();
+}
+
+function getNum(key) {
+  return parseInt(localStorage.getItem(key) || "0", 10);
+}
+
+function updateStats() {
+  document.getElementById("recordedCount").textContent = getNum("healthRecordCount");
+  document.getElementById("bmiCount").textContent = getNum("healthBmiCount");
+  document.getElementById("nurseCount").textContent = getNum("healthNurseCount");
+}
+
+function increaseDailyCount() {
+  localStorage.setItem("healthRecordCount", String(getNum("healthRecordCount") + 1));
+  // ทุกครั้งที่มีการบันทึก = นักเรียน 1 คนมาห้องพยาบาล
+  localStorage.setItem("healthNurseCount", String(getNum("healthNurseCount") + 1));
+}
+
+function updateHealthStatus(bmi) {
+  if (bmi < 18.5 || bmi >= 23) {
+    localStorage.setItem("healthBmiCount", String(getNum("healthBmiCount") + 1));
+  }
+}
+
+initDailyStats();
+
+const form = document.getElementById('healthForm');
+const body = document.getElementById('reportBody');
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value;
+  const studentNo = document.getElementById('studentNo').value;
+  const cls = document.getElementById('class').value;
+  const w = parseFloat(document.getElementById('weight').value);
+  const h = parseFloat(document.getElementById('height').value) / 100;
+  const bmi = (w / (h*h)).toFixed(1);
+
+  let status = bmi < 18.5 ? 'น้ำหนักน้อย' :
+               bmi < 23 ? 'ปกติ' :
+               bmi < 25 ? 'เริ่มเกิน' : 'ควรติดตาม';
+
+  const drugAllergy = document.getElementById('drugAllergy').value || 'ไม่มี';
+  const foodAllergy = document.getElementById('foodAllergy').value || 'ไม่มี';
+  const note = document.getElementById('note').value || '-';
+
+  body.innerHTML = `<tr>
+    <td>${name}</td><td>${studentNo}</td><td>${cls}</td><td>${bmi}</td>
+    <td>${status}</td><td>${drugAllergy}</td><td>${foodAllergy}</td><td>${note}</td>
+  </tr>`;
+
+  document.getElementById('result').innerHTML =
+    '<div class="success">✅ บันทึกสุขภาพนักเรียนที่มาห้องพยาบาลเรียบร้อยแล้ว</div>';
+
+  increaseDailyCount();
+  updateHealthStatus(parseFloat(bmi));
+  updateStats();
+
+  form.reset();
+  document.getElementById('report').scrollIntoView({behavior:'smooth'});
+});
+</script>
+</body>
+</html>
